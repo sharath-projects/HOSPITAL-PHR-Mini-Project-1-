@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Add patient - Hospital PHR{% endblock %}
+{% block content %}
+<h4 class="mb-3">Add patient</h4>
+<form method="POST" action="{{ url_for('add_patient') }}">
+  <div class="row">
+    <div class="col-12 col-md-6 mb-3">
+      <label class="form-label" for="name">Full name</label>
+      <input class="form-control" type="text" id="name" name="name" value="{{ form.get('name', '') }}" required>
+    </div>
+    <div class="col-6 col-md-3 mb-3">
+      <label class="form-label" for="age">Age</label>
+      <input class="form-control" type="number" id="age" name="age" min="0" max="120" value="{{ form.get('age', '') }}" required>
+    </div>
+    <div class="col-6 col-md-3 mb-3">
+      <label class="form-label" for="gender">Gender</label>
+      <select class="form-select" id="gender" name="gender" required>
+        <option value="">Choose...</option>
+        {% for g in ['Male', 'Female', 'Other'] %}
+        <option value="{{ g }}" {% if form.get('gender') == g %}selected{% endif %}>{{ g }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="phone">Phone (10 digits)</label>
+    <input class="form-control" type="tel" id="phone" name="phone" maxlength="10" value="{{ form.get('phone', '') }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="address">Address</label>
+    <textarea class="form-control" id="address" name="address" rows="2">{{ form.get('address', '') }}</textarea>
+  </div>
+  <button class="btn btn-primary" type="submit">Save patient</button>
+  <a class="btn btn-outline-secondary" href="{{ url_for('patients') }}">Cancel</a>
+</form>
+{% endblock %}

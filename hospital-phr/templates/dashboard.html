@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Hospital PHR{% endblock %}
+{% block content %}
+<h4 class="mb-3">Welcome, {{ session['username'] }} ({{ session['role'] }})</h4>
+<div class="row">
+  <div class="col-12 col-md-6">
+    <div class="card"><div class="card-body">
+      <h5 class="card-title">Find a patient</h5>
+      <p class="card-text">Search by name and open the patient record.</p>
+      <a class="btn btn-primary" href="{{ url_for('patients') }}">Search patients</a>
+    </div></div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="card"><div class="card-body">
+      <h5 class="card-title">New patient</h5>
+      <p class="card-text">Register a new patient.</p>
+      <a class="btn btn-primary" href="{{ url_for('add_patient') }}">Add patient</a>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Add allergy - Hospital PHR{% endblock %}
+{% block content %}
+<h4 class="mb-3">Add allergy for {{ patient['name'] }}</h4>
+<form method="POST" action="{{ url_for('add_allergy', pid=patient['id']) }}">
+  <div class="mb-3">
+    <label class="form-label" for="substance">Drug or substance</label>
+    <input class="form-control" type="text" id="substance" name="substance" placeholder="e.g. Penicillin" required>
+  </div>
+  <button class="btn btn-danger" type="submit">Save allergy</button>
+  <a class="btn btn-outline-secondary" href="{{ url_for('patient_detail', pid=patient['id']) }}">Cancel</a>
+</form>
+{% endblock %}

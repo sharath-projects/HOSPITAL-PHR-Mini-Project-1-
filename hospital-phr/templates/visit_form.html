@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Add visit - Hospital PHR{% endblock %}
+{% block content %}
+<h4 class="mb-3">New visit for {{ patient['name'] }}</h4>
+
+{% if allergies %}
+<p>Known allergies:
+  {% for a in allergies %}<span class="badge bg-danger me-1">{{ a['substance'] }}</span>{% endfor %}
+</p>
+{% else %}
+<div class="alert alert-warning" role="alert">
+  No allergies are recorded for this patient. Ask the patient about drug allergies before prescribing,
+  and add any allergy first.
+  <a href="{{ url_for('add_allergy', pid=patient['id']) }}">Add allergy</a>
+</div>
+{% endif %}
+
+{% if warning %}
+<div class="alert alert-danger allergy-alert" role="alert">
+  ALLERGY WARNING: the drug <strong>{{ warning[0] }}</strong> matches the recorded allergy
+  <strong>{{ warning[1] }}</strong>. It may cause a reaction. Change the drug, or tick the box
+  below to save anyway.
+</div>
+{% endif %}
+
+<form method="POST" action="{{ url_for('add_visit', pid=patient['id']) }}">
+  <div class="mb-3">
+    <label class="form-label d-block">Case type</label>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="case_type" id="ct_minor" value="Minor"
+             {% if form.get('case_type', 'Minor') == 'Minor' %}checked{% endif %}>
+      <label class="form-check-label" for="ct_minor">Minor (fever, cold: verbal allergy question)</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="case_type" id="ct_major" value="Major"
+             {% if form.get('case_type') == 'Major' %}checked{% endif %}>
+      <label class="form-check-label" for="ct_major">Major (e.g. cancer, many drugs)</label>
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="complaint">Complaint</label>
+    <input class="form-control" type="text" id="complaint" name="complaint" value="{{ form.get('complaint', '') }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="diagnosis">Diagnosis</label>
+    <input class="form-control" type="text" id="diagnosis" name="diagnosis" value="{{ form.get('diagnosis', '') }}">
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="drug">Drug(s) prescribed</label>
+    <input class="form-control" type="text" id="drug" name="drug" value="{{ form.get('drug', '') }}" required>
+    <div class="form-text">Several drugs: separate with a comma or a plus sign, e.g. Drug A, Drug B</div>
+  </div>
+  <div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" id="allergy_asked" name="allergy_asked" value="1"
+           {% if form.get('allergy_asked') %}checked{% endif %}>
+    <label class="form-check-label" for="allergy_asked">I asked the patient about drug allergies.</label>
+  </div>
+  <div class="card"><div class="card-body">
+    <h6 class="card-title">For Major cases only: allergy test status</h6>
+    <div class="mb-3">
+      <select class="form-select" id="allergy_test_status" name="allergy_test_status">
+        <option value="">Choose...</option>
+        {% for s in ['Not needed', 'Advised', 'Done'] %}
+        <option value="{{ s }}" {% if form.get('allergy_test_status') == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="form-label" for="allergy_test_note">Test result or reason (optional)</label>
+      <input class="form-control" type="text" id="allergy_test_note" name="allergy_test_note" value="{{ form.get('allergy_test_note', '') }}">
+    </div>
+  </div></div>
+  {% if warning %}
+  <div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" id="override" name="override" value="1">
+    <label class="form-check-label" for="override">I understand the risk. Save this visit anyway.</label>
+  </div>
+  {% endif %}
+  <button class="btn btn-primary" type="submit">Save visit</button>
+  <a class="btn btn-outline-secondary" href="{{ url_for('patient_detail', pid=patient['id']) }}">Cancel</a>
+</form>
+{% endblock %}

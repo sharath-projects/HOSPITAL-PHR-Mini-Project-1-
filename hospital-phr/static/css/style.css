@@ -1,0 +1,18 @@
+/* style.css : small custom styles on top of Bootstrap */
+body { background: #f5f7fa; }
+.navbar-brand { font-weight: 700; }
+.card { margin-bottom: 1rem; }
+
+/* the allergy warning must be impossible to miss */
+.allergy-alert {
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-left: 10px solid #b00020;
+}
+
+/* phones: full-width buttons and slightly smaller tables */
+@media (max-width: 576px) {
+  .btn { width: 100%; margin-bottom: 0.5rem; }
+  .btn-sm { width: auto; margin-bottom: 0; }
+  table { font-size: 0.9rem; }
+}

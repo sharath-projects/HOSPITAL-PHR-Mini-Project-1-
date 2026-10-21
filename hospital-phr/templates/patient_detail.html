@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}{{ patient['name'] }} - Hospital PHR{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">{{ patient['name'] }}</h4>
+    <p class="card-text mb-0">
+      Age: {{ patient['age'] }} | Gender: {{ patient['gender'] }} | Phone: {{ patient['phone'] }}<br>
+      Address: {{ patient['address'] or '-' }}
+    </p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Allergies</h5>
+    {% if allergies %}
+      {% for a in allergies %}
+        <span class="badge bg-danger me-1">{{ a['substance'] }}</span>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted mb-2">No allergies recorded.</p>
+    {% endif %}
+    {% if session.get('role') == 'doctor' %}
+      <div class="mt-3">
+        <a class="btn btn-sm btn-outline-danger" href="{{ url_for('add_allergy', pid=patient['id']) }}">Add allergy</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Visits</h5>
+    {% if visits %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead><tr><th>Date</th><th>Case</th><th>Complaint</th><th>Diagnosis</th><th>Drug(s)</th><th>Allergy check</th></tr></thead>
+        <tbody>
+          {% for v in visits %}
+          <tr>
+            <td>{{ v['visit_date'] }}</td>
+            <td>
+              {% if v['case_type'] == 'Major' %}<span class="badge bg-warning text-dark">Major</span>
+              {% else %}<span class="badge bg-secondary">Minor</span>{% endif %}
+            </td>
+            <td>{{ v['complaint'] }}</td>
+            <td>{{ v['diagnosis'] or '-' }}</td>
+            <td>{{ v['drug'] }}</td>
+            <td>
+              {% if v['case_type'] == 'Minor' %}Asked verbally
+              {% else %}Test: {{ v['allergy_test_status'] }}{% if v['allergy_test_note'] %}<br><small class="text-muted">{{ v['allergy_test_note'] }}</small>{% endif %}
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="text-muted">No visits yet.</p>
+    {% endif %}
+    {% if session.get('role') == 'doctor' %}
+      <a class="btn btn-sm btn-primary" href="{{ url_for('add_visit', pid=patient['id']) }}">Add visit</a>
+    {% endif %}
+  </div>
+</div>
+<a class="btn btn-outline-secondary" href="{{ url_for('patients') }}">Back to list</a>
+{% endblock %}
